@@ -18,7 +18,7 @@ class ItemFactory extends Factory
     public function definition(): array
     {
          return [
-            'category_id' => Categories::factory(),
+            'category_id' => Categories::inRandomOrder()->first()->id,
             'code' => fake()->unique()->bothify('INV-###'),
             'name' => fake()->words(2, true),
             'photo' => null,
