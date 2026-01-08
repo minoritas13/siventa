@@ -23,7 +23,6 @@ class LoanController extends Controller
 
         return LoanResource::collection($loans);
     }
-
     /**
      * POST - Buat loan baru
      */
