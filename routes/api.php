@@ -48,7 +48,7 @@ Route::middleware('auth:sanctum')->group(function () {
     | VERIFIED USER ROUTES (EMAIL VERIFIED)
     |--------------------------------------------------------------------------
     */
-    Route::middleware('verified')->group(function () {
+    Route::middleware('verified.api')->group(function () {
 
         // Items
         Route::get('/items', [ItemController::class, 'index']);
