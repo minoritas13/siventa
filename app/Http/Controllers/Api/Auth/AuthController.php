@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Auth\Events\Registered;
 
 class AuthController extends Controller
 {
@@ -28,10 +29,10 @@ class AuthController extends Controller
         ]);
 
         // Kirim email verifikasi
-        $user->sendEmailVerificationNotification();
+        // event(new Registered($user));
 
         return response()->json([
-            'message' => 'Registrasi berhasil. Silakan cek email untuk verifikasi.',
+            'message' => 'Registrasi berhasil.',
         ], 201);
     }
 
@@ -56,10 +57,7 @@ class AuthController extends Controller
         $token = $user->createToken('api-token')->plainTextToken;
 
         return response()->json([
-            'message' => $user->hasVerifiedEmail()
-                ? 'Login berhasil'
-                : 'Email belum diverifikasi',
-            'verified' => $user->hasVerifiedEmail(),
+            'message' => 'Login berhasil',
             'token' => $token,
             'user' => $user,
         ]);

@@ -1,12 +1,12 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\Auth\AuthController;
+use App\Http\Controllers\Api\Auth\EmailVerificationController;
+use App\Http\Controllers\Api\Category\CategoriesController;
 use App\Http\Controllers\Api\Item\ItemController;
 use App\Http\Controllers\Api\Loan\LoanController;
 use App\Http\Controllers\Api\User\UserController;
-use App\Http\Controllers\Api\Category\CategoriesController;
-use App\Http\Controllers\Api\Auth\EmailVerificationController;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,7 +25,7 @@ Route::get('/user', [UserController::class, 'index']);
 Route::get('/email/verify/{id}/{hash}',
     [EmailVerificationController::class, 'verify']
 )->middleware('signed')
- ->name('verification.verify');
+    ->name('verification.verify');
 
 /*
 |--------------------------------------------------------------------------
@@ -43,32 +43,23 @@ Route::middleware('auth:sanctum')->group(function () {
         [EmailVerificationController::class, 'resend']
     );
 
-    /*
-    |--------------------------------------------------------------------------
-    | VERIFIED USER ROUTES (EMAIL VERIFIED)
-    |--------------------------------------------------------------------------
-    */
-    Route::middleware('verified.api')->group(function () {
+    // Items
+    Route::get('/items', [ItemController::class, 'index']);
+    Route::post('/item/store', [ItemController::class, 'store']);
+    Route::put('/item/update/{item}', [ItemController::class, 'update']);
+    Route::delete('/item/delete/{item}', [ItemController::class, 'destroy']);
 
-        // Items
-        Route::get('/items', [ItemController::class, 'index']);
-        Route::post('/item/store', [ItemController::class, 'store']);
-        Route::put('/item/update/{item}', [ItemController::class, 'update']);
-        Route::delete('/item/delete/{item}', [ItemController::class, 'destroy']);
+    // Loans
+    Route::get('/loans', [LoanController::class, 'index']);
+    Route::post('/loan/store', [LoanController::class, 'store']);
+    Route::get('/loan/{loan}', [LoanController::class, 'show']);
+    Route::put('/loan/update/{loan}', [LoanController::class, 'update']);
+    Route::delete('/loan/delete/{loan}', [LoanController::class, 'destroy']);
 
-        // Loans
-        Route::get('/loans', [LoanController::class, 'index']);
-        Route::post('/loan/store', [LoanController::class, 'store']);
-        Route::get('/loan/{loan}', [LoanController::class, 'show']);
-        Route::put('/loan/update/{loan}', [LoanController::class, 'update']);
-        Route::delete('/loan/delete/{loan}', [LoanController::class, 'destroy']);
+    // Categories
+    Route::get('/categories', [CategoriesController::class, 'index']);
+    Route::post('/categories/store', [CategoriesController::class, 'store']);
+    Route::put('/categories/update/{category}', [CategoriesController::class, 'update']);
+    Route::delete('/categories/delete/{category}', [CategoriesController::class, 'destroy']);
 
-        // Categories
-        Route::get('/categories', [CategoriesController::class, 'index']);
-        Route::post('/categories/store', [CategoriesController::class, 'store']);
-        Route::put('/categories/update/{category}', [CategoriesController::class, 'update']);
-        Route::delete('/categories/delete/{category}', [CategoriesController::class, 'destroy']);
-    });
 });
-
-
