@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers\Api\Loan;
 
-use App\Models\Loan;
-use App\Models\LoanItem;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\LoanResource;
+use App\Models\Item;
+use App\Models\Loan;
+use App\Models\LoanItem;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class LoanController extends Controller
@@ -23,6 +25,7 @@ class LoanController extends Controller
 
         return LoanResource::collection($loans);
     }
+
     /**
      * POST - Buat loan baru
      */
@@ -32,29 +35,60 @@ class LoanController extends Controller
             'loan_date' => 'required|date',
             'note' => 'nullable|string',
             'items' => 'required|array',
-            'items.*.item_id' => 'required|integer',
+            'items.*.item_id' => 'required|integer|exists:items,id',
             'items.*.qty' => 'required|integer|min:1',
         ]);
 
-        $loan = Loan::create([
-            'user_id' => Auth::id(),
-            'loan_date' => $validated['loan_date'],
-            'status' => 'dipinjam',
-            'note' => $validated['note'] ?? null,
-        ]);
+        DB::beginTransaction();
 
-        foreach ($validated['items'] as $item) {
-            LoanItem::create([
-                'loan_id' => $loan->id,
-                'item_id' => $item['item_id'],
-                'quantity' => $item['qty'],
+        try {
+            // 1. Buat loan
+            $loan = Loan::create([
+                'user_id' => Auth::id(),
+                'loan_date' => $validated['loan_date'],
+                'status' => 'dipinjam',
+                'note' => $validated['note'] ?? null,
             ]);
-        }
 
-        return response()->json([
-            'message' => 'Loan berhasil dibuat',
-            'data' => $loan->load('loanItems')
-        ], 201);
+            // 2. Loop item
+            foreach ($validated['items'] as $itemData) {
+                // ambil item + lock
+                $item = Item::where('id', $itemData['item_id'])
+                    ->lockForUpdate()
+                    ->first();
+
+                // 3. Cek stok
+                if ($item->stock < $itemData['qty']) {
+                    throw new \Exception(
+                        "Stok {$item->name} tidak mencukupi"
+                    );
+                }
+
+                // 4. Simpan loan item
+                LoanItem::create([
+                    'loan_id' => $loan->id,
+                    'item_id' => $item->id,
+                    'quantity' => $itemData['qty'],
+                ]);
+
+                // 5. Kurangi stok
+                $item->decrement('stock', $itemData['qty']);
+            }
+
+            DB::commit();
+
+            return response()->json([
+                'message' => 'Loan berhasil dibuat',
+                'data' => $loan->load('loanItems.item'),
+            ], 201);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return response()->json([
+                'message' => $e->getMessage(),
+            ], 400);
+        }
     }
 
     /**
@@ -63,7 +97,7 @@ class LoanController extends Controller
     public function show(Loan $loan)
     {
         return response()->json([
-            'data' => $loan->load('loanItems')
+            'data' => $loan->load('loanItems'),
         ]);
     }
 
@@ -82,7 +116,7 @@ class LoanController extends Controller
 
         return response()->json([
             'message' => 'Loan berhasil diperbarui',
-            'data' => $loan
+            'data' => $loan,
         ]);
     }
 
@@ -96,7 +130,7 @@ class LoanController extends Controller
 
         return response()->json([
             'message' => 'Loan berhasil dihapus',
-            'data' => $loan
+            'data' => $loan,
         ]);
     }
 }

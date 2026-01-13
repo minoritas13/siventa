@@ -16,6 +16,12 @@ class ItemController extends Controller
         return ItemResource::collection($item);
     }
 
+    public function show(Item $item){
+
+        return new ItemResource($item);
+
+    }
+
     public function store(Request $request)
     {
         $validated = $request->validate([

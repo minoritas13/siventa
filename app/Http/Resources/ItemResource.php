@@ -22,7 +22,7 @@ class ItemResource extends JsonResource
                 $this->category->id,
                 $this->category->name
             ],
-
+            'stock' => $this->stock,
             'kode' => $this->code,
             'photo' => $this->photo,
             'deskripsi' => $this->description,
