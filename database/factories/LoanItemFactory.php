@@ -19,8 +19,8 @@ class LoanItemFactory extends Factory
     public function definition(): array
     {
        return [
-            'loan_id' => Loan::factory(),
-            'item_id' => Item::factory(),
+            'loan_id' => Loan::inRandomOrder()->value('id'),
+            'item_id' => Item::inRandomOrder()->value('id'),
             'quantity' => fake()->numberBetween(1, 3),
         ];
     }

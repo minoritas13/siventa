@@ -37,7 +37,7 @@ class DatabaseSeeder extends Seeder
                 'loanItems'
             )
             ->create([
-                'user_id' => User::inRandomOrder()->first()->id,
+                'user_id' => User::inRandomOrder()->value('id'),
             ]);
 
     }

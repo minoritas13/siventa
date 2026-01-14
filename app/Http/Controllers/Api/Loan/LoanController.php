@@ -46,7 +46,7 @@ class LoanController extends Controller
             $loan = Loan::create([
                 'user_id' => Auth::id(),
                 'loan_date' => $validated['loan_date'],
-                'status' => 'dipinjam',
+                'status' => 'menunggu',
                 'note' => $validated['note'] ?? null,
             ]);
 
@@ -107,7 +107,7 @@ class LoanController extends Controller
     public function update(Request $request, Loan $loan)
     {
         $validated = $request->validate([
-            'status' => 'required|in:dipinjam,dikembalikan,terlambat',
+            'status' => 'required|in:dipinjam,dikembalikan,terlambat,menunggu',
             'return_date' => 'nullable|date',
             'note' => 'nullable|string',
         ]);

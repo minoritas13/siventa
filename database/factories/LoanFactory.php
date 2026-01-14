@@ -21,7 +21,7 @@ class LoanFactory extends Factory
             'user_id' => null,
             'loan_date' => now(),
             'return_date' => null,
-            'status' => 'dipinjam',
+            'status' => fake()->randomElement(['dipinjam', 'menunggu']),
             'note' => fake()->sentence(),
         ];
     }
