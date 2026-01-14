@@ -8,6 +8,10 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Auth\Events\Registered;
+use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Carbon;
 
 class AuthController extends Controller
 {
@@ -81,5 +85,64 @@ class AuthController extends Controller
     public function me(Request $request)
     {
         return new UserResource($request->user());
+    }
+
+    public function resetPassword(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email|exists:users,email',
+            'token' => 'required|string',
+            'password' => 'required|string|min:8|confirmed',
+        ]);
+
+        $record = DB::table('password_reset_tokens')
+            ->where('email', $request->email)
+            ->first();
+
+        if (! $record) {
+            return response()->json([
+                'message' => 'Token tidak ditemukan',
+            ], 400);
+        }
+
+        if (! Hash::check($request->token, $record->token)) {
+            return response()->json([
+                'message' => 'Token tidak valid',
+            ], 400);
+        }
+
+        User::where('email', $request->email)->update([
+            'password' => Hash::make($request->password),
+        ]);
+
+        DB::table('password_reset_tokens')
+            ->where('email', $request->email)
+            ->delete();
+
+        return response()->json([
+            'message' => 'Password berhasil direset',
+        ]);
+    }
+
+    public function forgotPassword(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email|exists:users,email',
+        ]);
+
+        $token = Str::random(64);
+
+        DB::table('password_reset_tokens')->updateOrInsert(
+            ['email' => $request->email],
+            [
+                'token' => Hash::make($token),
+                'created_at' => Carbon::now(),
+            ]
+        );
+
+        return response()->json([
+            'message' => 'Token reset password berhasil dibuat',
+            'token' => $token,
+        ]);
     }
 }
