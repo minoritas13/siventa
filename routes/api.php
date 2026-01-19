@@ -22,10 +22,13 @@ Route::get('/user', [UserController::class, 'index']);
 | EMAIL VERIFICATION (PUBLIC - SIGNED)
 |--------------------------------------------------------------------------
 */
+
+/*
 Route::get('/email/verify/{id}/{hash}',
     [EmailVerificationController::class, 'verify']
 )->middleware('signed')
     ->name('verification.verify');
+*/
 
 /*
 |--------------------------------------------------------------------------
@@ -37,13 +40,19 @@ Route::middleware('auth:sanctum')->group(function () {
     // User info
     Route::get('/me', [AuthController::class, 'me']);
     Route::post('/reset-password',[AuthController::class, 'resetPassword']);
-    Route::post('/forgot-password',[AuthController::class, 'forgotPassword']);
+    Route::post('/forgot-password',[AuthController::class, 'Password']);
     Route::post('/logout', [AuthController::class, 'logout']);
 
     // Resend verification (khusus login tapi belum verified)
+    /*
     Route::post('/email/verification-notification',
         [EmailVerificationController::class, 'resend']
     );
+    */
+
+    //user
+    Route::put('/users/update/{id}', [UserController::class, 'update']);
+    Route::delete('/users/delete/{id}', [UserController::class, 'destroy']);
 
     // Items
     Route::get('/items', [ItemController::class, 'index']);

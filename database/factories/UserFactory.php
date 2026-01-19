@@ -22,6 +22,7 @@ class UserFactory extends Factory
             'email' => fake()->unique()->safeEmail(),
             'password' => 'password123',
             'role' => fake()->randomElement(['admin', 'staff']),
+            'divisi' => 'Uji Coba',
         ];
     }
 

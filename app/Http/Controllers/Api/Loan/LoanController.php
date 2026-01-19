@@ -7,9 +7,9 @@ use App\Http\Resources\LoanResource;
 use App\Models\Item;
 use App\Models\Loan;
 use App\Models\LoanItem;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class LoanController extends Controller
 {
@@ -96,9 +96,12 @@ class LoanController extends Controller
      */
     public function show(Loan $loan)
     {
-        return response()->json([
-            'data' => $loan->load('loanItems'),
+        $loan->load([
+            'user',
+            'loanItems.item', // WAJIB
         ]);
+
+        return new LoanResource($loan);
     }
 
     /**
