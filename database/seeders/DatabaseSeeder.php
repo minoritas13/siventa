@@ -36,9 +36,7 @@ class DatabaseSeeder extends Seeder
                 LoanItem::factory()->count(2),
                 'loanItems'
             )
-            ->create([
-                'user_id' => User::inRandomOrder()->value('id'),
-            ]);
+            ->create();
 
     }
 }
