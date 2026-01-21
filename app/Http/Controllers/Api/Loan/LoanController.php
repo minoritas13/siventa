@@ -136,4 +136,13 @@ class LoanController extends Controller
             'data' => $loan,
         ]);
     }
+
+    public function allLoans()
+    {
+        $loans = Loan::with('loanItems')
+            ->latest()
+            ->get();
+
+        return LoanResource::collection($loans);
+    }
 }
