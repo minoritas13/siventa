@@ -30,7 +30,7 @@ class LoanResource extends JsonResource
                         'name'  => $li->item->name,
                         'photo' => $li->item->photo,
                         'code' => $li->item->code,
-
+                        'kondisi' => $li->item->condition,
                     ],
                 ];
             }),
