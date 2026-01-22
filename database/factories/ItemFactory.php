@@ -17,14 +17,21 @@ class ItemFactory extends Factory
      */
     public function definition(): array
     {
-         return [
+        $tanggalPerolehan = $this->faker->dateTimeBetween('-5 years', 'now');
+
+        return [
             'category_id' => Categories::inRandomOrder()->first()->id,
-            'code' => fake()->unique()->bothify('INV-###'),
-            'name' => fake()->words(2, true),
+            'code' => $this->faker->unique()->bothify('INV-###'),
+            'name' => $this->faker->words(2, true),
             'photo' => null,
-            'stock' => fake()->numberBetween(1, 50),
-            'condition' => fake()->randomElement(['baik', 'rusak ringan']),
-            'description' => fake()->sentence(),
+
+            'stock' => $this->faker->numberBetween(1, 50),
+            'condition' => $this->faker->randomElement(['baik', 'rusak ringan']),
+            'description' => $this->faker->sentence(),
+
+            'tanggal_perolehan' => $tanggalPerolehan,
+            'nilai_perolehan' => $this->faker->numberBetween(1_000_000, 50_000_000),
+            'umur_barang' => now()->diffInYears($tanggalPerolehan),
         ];
     }
 }

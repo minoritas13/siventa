@@ -20,9 +20,12 @@ return new class extends Migration
             $table->string('code')->unique();
             $table->string('name');
             $table->string('photo')->nullable();
-            $table->integer('stock');
+            $table->integer('stock')->nullable();
             $table->string('condition');
             $table->text('description')->nullable();
+            $table->date('tanggal_perolehan');
+            $table->string('nilai_perolehan');
+            $table->integer('umur_barang');
             $table->timestamps();
         });
     }

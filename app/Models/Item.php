@@ -20,6 +20,9 @@ class Item extends Model
         'stock',
         'condition',
         'description',
+        'tanggal_perolehan',
+        'nilai_perolehan',
+        'umur_barang',
     ];
 
     // RELATION

@@ -16,17 +16,27 @@ class ItemResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'name' => $this->name,
 
-            'kategori_id' => [
-                $this->category->id,
-                $this->category->name
+            'category_id' => $this->category_id,
+            'category' => [
+                'id' => $this->category?->id,
+                'name' => $this->category?->name,
             ],
-            'stock' => $this->stock,
-            'kode' => $this->code,
+
+            'code' => $this->code,
+            'name' => $this->name,
             'photo' => $this->photo,
-            'deskripsi' => $this->description,
-            'kondisi' => $this->condition,
+
+            'stock' => $this->stock,
+            'condition' => $this->condition,
+            'description' => $this->description,
+
+            'tanggal_perolehan' => $this->tanggal_perolehan,
+            'nilai_perolehan' => $this->nilai_perolehan,
+            'umur_barang' => $this->umur_barang,
+
+            'created_at' => $this->created_at?->toDateTimeString(),
+            'updated_at' => $this->updated_at?->toDateTimeString(),
         ];
     }
 }

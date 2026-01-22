@@ -35,6 +35,9 @@ class ItemController extends Controller
             'stock' => 'required|integer|min:0',
             'condition' => 'required|string',
             'description' => 'nullable|string',
+            'umur_barang' => 'required|integer|min:0',
+            'tanggal_perolehan' => 'required|date',
+            'nilai_perolehan' => 'required',
         ]);
 
         if ($request->hasFile('photo')) {
@@ -58,12 +61,15 @@ class ItemController extends Controller
     {
         $validated = $request->validate([
             'category_id' => 'required|exists:categories,id',
-            'code' => 'required|string|unique:items,code,'.$item->id,
+            'code' => 'required|string|unique:items,code',
             'name' => 'required|string|max:255',
             'photo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
             'stock' => 'required|integer|min:0',
             'condition' => 'required|string',
             'description' => 'nullable|string',
+            'umur' => 'required|integer|min:0',
+            'tanggal_perolehan' => 'required|date',
+            'nilai_perolehan' => 'required',
         ]);
 
         if ($request->hasFile('photo')) {
