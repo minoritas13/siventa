@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\Api\Item;
 
+use App\Models\Item;
+use App\Models\Loan;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ItemResource;
-use App\Models\Item;
-use Illuminate\Http\Request;
 
 class ItemController extends Controller
 {
@@ -16,7 +18,8 @@ class ItemController extends Controller
         return ItemResource::collection($item);
     }
 
-    public function show(Item $item){
+    public function show(Item $item)
+    {
 
         return new ItemResource($item);
 
@@ -82,16 +85,26 @@ class ItemController extends Controller
         ]);
     }
 
-    /**
-     * DELETE - Remove item
-     */
     public function destroy(Item $item)
     {
-        if ($item->photo) {
-            Storage::disk('public/item')->delete($item->photo);
-        }
+        DB::transaction(function () use ($item) {
 
-        $item->delete();
+            // Hapus file foto jika ada
+            if ($item->photo) {
+                Storage::disk('public/item')->delete($item->photo);
+            }
+
+            // Ambil semua loan_id yang terkait item ini
+            $loanIds = $item->loanItems()
+                ->pluck('loan_id')
+                ->unique();
+
+            // Hapus loan yang terkait
+            Loan::whereIn('id', $loanIds)->delete();
+
+            // Hapus item
+            $item->delete();
+        });
 
         return response()->json([
             'message' => 'Item successfully deleted',
