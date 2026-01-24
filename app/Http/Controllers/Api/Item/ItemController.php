@@ -61,7 +61,7 @@ class ItemController extends Controller
     {
         $validated = $request->validate([
             'category_id' => 'required|exists:categories,id',
-            'code' => 'required|string|unique:items,code'. $item->id,
+            'code' => 'required|string|unique:items,code,'. $item->id,
             'name' => 'required|string|max:255',
             'photo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
             'stock' => 'nullable|integer|min:0',
