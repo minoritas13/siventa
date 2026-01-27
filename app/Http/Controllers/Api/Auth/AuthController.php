@@ -17,6 +17,7 @@ class AuthController extends Controller
     /**
      * REGISTER
      */
+    
     public function register(Request $request)
     {
         $validated = $request->validate([
