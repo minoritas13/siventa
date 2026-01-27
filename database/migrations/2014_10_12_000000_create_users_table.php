@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('password');
             $table->string('divisi');
             $table->enum('role', ['admin', 'staff'])->default('staff');
+            $table->timestamp('email_verified_at')->nullable();
             $table->timestamps();
         });
 

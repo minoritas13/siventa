@@ -99,7 +99,7 @@ class ItemController extends Controller
 
             // Hapus file foto jika ada
             if ($item->photo) {
-                Storage::disk('public/item')->delete($item->photo);
+                Storage::disk('public')->delete($item->photo);
             }
 
             // Ambil semua loan_id yang terkait item ini

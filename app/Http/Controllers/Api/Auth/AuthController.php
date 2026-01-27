@@ -3,15 +3,14 @@
 namespace App\Http\Controllers\Api\Auth;
 
 use App\Models\User;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Auth\Events\Registered;
-use Illuminate\Support\Facades\Password;
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Carbon;
+use App\Services\BrevoMailService;
 
 class AuthController extends Controller
 {
@@ -24,7 +23,7 @@ class AuthController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|string|min:8|confirmed',
-            'divisi' => 'required|string'
+            'divisi' => 'required|string',
         ]);
 
         $user = User::create([
@@ -35,10 +34,15 @@ class AuthController extends Controller
         ]);
 
         // Kirim email verifikasi
-        // event(new Registered($user));
+        BrevoMailService::send(
+            $user->email,
+            'Test Register',
+            '<p>Register berhasil</p>'
+        );
 
         return response()->json([
             'message' => 'Registrasi berhasil.',
+            'user' => $user,
         ], 201);
     }
 

@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\Category\CategoriesController;
 use App\Http\Controllers\Api\Item\ItemController;
 use App\Http\Controllers\Api\Loan\LoanController;
 use App\Http\Controllers\Api\User\UserController;
+use App\Http\Controllers\api\TestEmailController;
 use Illuminate\Support\Facades\Route;
 
 /*
