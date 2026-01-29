@@ -115,6 +115,23 @@ class LoanController extends Controller
             'note' => 'nullable|string',
         ]);
 
+        if ($loan->status === 'menunggu' && $validated['status'] !== 'dipinjam') {
+            return response()->json([
+                'message' => 'Status tidak valid',
+            ], 422);
+        }
+
+        if ($loan->status === 'dipinjam' && ! in_array($validated['status'], ['dikembalikan', 'terlambat'])) {
+            return response()->json([
+                'message' => 'Status tidak valid',
+            ], 422);
+        }
+
+        // Auto set tanggal kembali
+        if ($validated['status'] === 'dikembalikan') {
+            $validated['return_date'] = now();
+        }
+
         $loan->update($validated);
 
         return response()->json([
