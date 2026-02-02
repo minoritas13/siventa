@@ -6,7 +6,6 @@ use App\Http\Controllers\Api\Category\CategoriesController;
 use App\Http\Controllers\Api\Item\ItemController;
 use App\Http\Controllers\Api\Loan\LoanController;
 use App\Http\Controllers\Api\User\UserController;
-use App\Http\Controllers\api\TestEmailController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -17,6 +16,19 @@ use Illuminate\Support\Facades\Route;
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::get('/user', [UserController::class, 'index']);
+
+Route::get('/email/verify/{id}/{hash}', [EmailVerificationController::class, 'verify'])->middleware('signed')->name('verification.verify');
+
+Route::get('/test-brevo', function () {
+
+    $res = \App\Services\BrevoMailService::send(
+        'nafisrizqullah12@gmail.com',
+        'TEST BREVO',
+        '<p>TES</p>'
+    );
+
+    return $res->json();
+});
 
 /*
 |--------------------------------------------------------------------------
@@ -40,8 +52,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // User info
     Route::get('/me', [AuthController::class, 'me']);
-    Route::post('/reset-password',[AuthController::class, 'resetPassword']);
-    Route::post('/forgot-password',[AuthController::class, 'Password']);
+    Route::post('/reset-password', [AuthController::class, 'resetPassword']);
+    Route::post('/forgot-password', [AuthController::class, 'Password']);
     Route::post('/logout', [AuthController::class, 'logout']);
 
     // Resend verification (khusus login tapi belum verified)
@@ -51,7 +63,7 @@ Route::middleware('auth:sanctum')->group(function () {
     );
     */
 
-    //user
+    // user
     Route::put('/users/update/{id}', [UserController::class, 'update']);
     Route::delete('/users/delete/{id}', [UserController::class, 'destroy']);
 

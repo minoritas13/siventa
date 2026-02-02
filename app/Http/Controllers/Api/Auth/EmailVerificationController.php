@@ -38,9 +38,7 @@ class EmailVerificationController extends Controller
 
         $user->markEmailAsVerified();
 
-        return response()->json([
-            'message' => 'Email berhasil diverifikasi',
-        ]);
+        return redirect(config('app.frontend_url') . '/login');
     }
 
     /**

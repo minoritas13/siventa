@@ -2,22 +2,22 @@
 
 namespace App\Http\Controllers\Api\Auth;
 
+use App\Http\Controllers\Controller;
+use App\Http\Resources\UserResource;
 use App\Models\User;
-use Illuminate\Support\Str;
+use App\Services\BrevoMailService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
-use App\Http\Controllers\Controller;
-use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Hash;
-use App\Services\BrevoMailService;
+use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
     /**
      * REGISTER
      */
-    
     public function register(Request $request)
     {
         $validated = $request->validate([
@@ -34,11 +34,33 @@ class AuthController extends Controller
             'password' => Hash::make($validated['password']),
         ]);
 
+        $verificationUrl = URL::temporarySignedRoute(
+            'verification.verify',
+            Carbon::now()->addMinutes(60),
+            [
+                'id' => $user->id,
+                'hash' => sha1($user->email),
+            ]
+        );
+
+        $html = "
+        <h3>Verifikasi Email</h3>
+        <p>Halo {$user->name},</p>
+        <p>Silakan klik tombol di bawah untuk memverifikasi email Anda:</p>
+        <a href='{$verificationUrl}'
+           style='display:inline-block;padding:10px 16px;
+           background:#2563eb;color:#fff;text-decoration:none;
+           border-radius:6px'>
+           Verifikasi Email
+        </a>
+        <p>Link berlaku 60 menit.</p>
+        ";
+
         // Kirim email verifikasi
         BrevoMailService::send(
             $user->email,
             'Test Register',
-            '<p>Register berhasil</p>'
+            $html,
         );
 
         return response()->json([
