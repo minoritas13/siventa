@@ -53,15 +53,8 @@ Route::middleware('auth:sanctum')->group(function () {
     // User info
     Route::get('/me', [AuthController::class, 'me']);
     Route::post('/reset-password', [AuthController::class, 'resetPassword']);
-    Route::post('/forgot-password', [AuthController::class, 'Password']);
+    Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
     Route::post('/logout', [AuthController::class, 'logout']);
-
-    // Resend verification (khusus login tapi belum verified)
-    /*
-    Route::post('/email/verification-notification',
-        [EmailVerificationController::class, 'resend']
-    );
-    */
 
     // user
     Route::put('/users/update/{id}', [UserController::class, 'update']);
