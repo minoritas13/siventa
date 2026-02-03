@@ -155,6 +155,7 @@ class AuthController extends Controller
 
     public function forgotPassword(Request $request)
     {
+
         $request->validate([
             'email' => 'required|email|exists:users,email',
         ]);
@@ -165,13 +166,44 @@ class AuthController extends Controller
             ['email' => $request->email],
             [
                 'token' => Hash::make($token),
-                'created_at' => Carbon::now(),
+                'created_at' => now(),
             ]
         );
 
+        $resetUrl = config('app.frontend_url').
+            "/reset-password?email={$request->email}&token={$token}";
+
+        $html = "
+        <p>Anda menerima email ini karena ada permintaan reset password.</p>
+        <p>
+            <a href='{$resetUrl}'
+               style='display:inline-block;padding:10px 16px;
+               background:#2563eb;color:#fff;text-decoration:none;border-radius:4px'>
+               Reset Password
+            </a>
+        </p>
+        <p>Link ini berlaku selama 60 menit.</p>
+    ";
+
+        $response = BrevoMailService::send(
+            $request->email,
+            'Reset Password',
+            $html
+        );
+
+        if ($response->failed()) {
+            \Log::error('Brevo error', [
+                'status' => $response->status(),
+                'body' => $response->json(),
+            ]);
+
+            return response()->json([
+                'message' => 'Gagal mengirim email reset password',
+            ], 500);
+        }
+
         return response()->json([
-            'message' => 'Token reset password berhasil dibuat',
-            'token' => $token,
+            'message' => 'Link reset password telah dikirim ke email',
         ]);
     }
 }

@@ -16,6 +16,8 @@ use Illuminate\Support\Facades\Route;
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::get('/user', [UserController::class, 'index']);
+Route::post('/reset-password', [AuthController::class, 'resetPassword']);
+Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
 
 Route::get('/email/verify/{id}/{hash}', [EmailVerificationController::class, 'verify'])->middleware('signed')->name('verification.verify');
 
@@ -52,8 +54,6 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // User info
     Route::get('/me', [AuthController::class, 'me']);
-    Route::post('/reset-password', [AuthController::class, 'resetPassword']);
-    Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
     Route::post('/logout', [AuthController::class, 'logout']);
 
     // user
