@@ -206,4 +206,30 @@ class AuthController extends Controller
             'message' => 'Link reset password telah dikirim ke email',
         ]);
     }
+
+    public function changePassword(Request $request)
+    {
+
+        $request->validate([
+            'current_password' => 'required',
+            'password' => 'required|min:8|confirmed',
+        ]);
+
+        $user = $request->user();
+
+        if (! Hash::check($request->current_password, $user->password)) {
+            return response()->json([
+                'message' => 'Password lama salah',
+            ], 400);
+        }
+
+        $user->update([
+            'password' => Hash::make($request->password),
+        ]);
+
+        return response()->json([
+            'message' => 'Password berhasil diubah',
+        ], 200);
+
+    }
 }
