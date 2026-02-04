@@ -23,7 +23,7 @@ class UserFactory extends Factory
             'password' => 'password123',
             'role' => fake()->randomElement(['admin', 'staff']),
             'divisi' => 'Uji Coba',
-            'no_hp' => '08' . $this->faker->numberBetween(100000000, 999999999),
+            'phone' => '08' . $this->faker->numberBetween(100000000, 999999999),
         ];
     }
 

@@ -33,6 +33,7 @@ class UserController extends Controller
             'password' => 'nullable|min:6',
             'role' => 'required|string',
             'divisi' => 'nullable|string',
+            'phone' => 'required|min:10',
         ]);
 
         // Kalau password diisi → update
