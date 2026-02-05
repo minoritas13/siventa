@@ -19,7 +19,7 @@ return new class extends Migration
                 ->cascadeOnDelete();
             $table->date('loan_date');
             $table->date('return_date')->nullable();
-            $table->enum('status', ['dipinjam', 'dikembalikan', 'menunggu','terlambat']);
+            $table->enum('status', ['dipinjam', 'dikembalikan', 'menunggu','terlambat','ditolak']);
             $table->text('note')->nullable();
             $table->timestamps();
         });

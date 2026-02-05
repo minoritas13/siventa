@@ -7,6 +7,7 @@ use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 
 class UserController extends Controller
@@ -17,7 +18,6 @@ class UserController extends Controller
 
         return UserResource::collection($user);
     }
-
 
     public function update(Request $request, $id)
     {
@@ -34,21 +34,31 @@ class UserController extends Controller
             'role' => 'required|string',
             'divisi' => 'nullable|string',
             'phone' => 'required|min:10',
+            'photo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
-        // Kalau password diisi → update
         if (! empty($validated['password'])) {
             $validated['password'] = Hash::make($validated['password']);
         } else {
             unset($validated['password']);
         }
 
-        $user->update($validated);
+        if ($request->hasFile('photo')) {
+            if ($user->photo) {
+                Storage::disk('public')->delete($user->photo);
+            }
+
+            $validated['photo'] = $request
+                ->file('photo')
+                ->store('profile', 'public');
+        }
+
+        $updated = $user->update($validated);
 
         return response()->json([
-            'message' => 'User berhasil diperbarui',
-            'data' => $user,
-        ], 200);
+            'updated' => $updated,
+            'data' => $user->fresh(),
+        ]);
     }
 
     /**
