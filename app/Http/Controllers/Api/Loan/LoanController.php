@@ -110,12 +110,12 @@ class LoanController extends Controller
     public function update(Request $request, Loan $loan)
     {
         $validated = $request->validate([
-            'status' => 'required|in:dipinjam,dikembalikan,terlambat,menunggu',
+            'status' => 'required|in:dipinjam,dikembalikan,terlambat,menunggu,ditolak',
             'return_date' => 'nullable|date',
             'note' => 'nullable|string',
         ]);
 
-        if ($loan->status === 'menunggu' && $validated['status'] !== 'dipinjam') {
+        if ($loan->status === 'menunggu' && ! in_array($validated['status'], ['dipinjam','ditolak'])) {
             return response()->json([
                 'message' => 'Status tidak valid',
             ], 422);
