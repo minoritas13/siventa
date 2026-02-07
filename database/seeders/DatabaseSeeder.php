@@ -4,11 +4,11 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
-use App\Models\Categories;
 use App\Models\Item;
 use App\Models\Loan;
-use App\Models\LoanItem;
 use App\Models\User;
+use App\Models\LoanItem;
+use App\Models\Categories;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -26,7 +26,7 @@ class DatabaseSeeder extends Seeder
         // ]);
 
         User::factory(5)->create();
-        Categories::factory(3)->create();
+        $this->call(CategorySeeder::class);
         Item::factory(10)->create();
 
         // 2. Buat loan + loan items (relasi benar)
