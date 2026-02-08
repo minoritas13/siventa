@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('photo')->nullable();
             $table->string('password');
             $table->string('phone')->nullable();
-            $table->string('divisi');
+            $table->string('divisi')->nullable();
             $table->enum('role', ['admin', 'staff'])->default('staff');
             $table->timestamp('email_verified_at')->nullable();
             $table->timestamps();
