@@ -21,16 +21,16 @@ Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
 
 Route::get('/email/verify/{id}/{hash}', [EmailVerificationController::class, 'verify'])->middleware('signed')->name('verification.verify');
 
-Route::get('/test-brevo', function () {
+// Route::get('/test-brevo', function () {
 
-    $res = \App\Services\BrevoMailService::send(
-        'nafisrizqullah12@gmail.com',
-        'TEST BREVO',
-        '<p>TES</p>'
-    );
+//     $res = \App\Services\BrevoMailService::send(
+//         'nafisrizqullah12@gmail.com',
+//         'TEST BREVO',
+//         '<p>TES</p>'
+//     );
 
-    return $res->json();
-});
+//     return $res->json();
+// });
 
 /*
 |--------------------------------------------------------------------------
